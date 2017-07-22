@@ -18,7 +18,6 @@ SPOJ-MLASERP	5
 
 Ordenação topológica	
 SPOJBR-ORKUT	1
-SPOJBR-ESCALO11	2
 SPOJ-DEPEND	3
 
 Componentes fort. conexas	
@@ -28,10 +27,8 @@ SPOJBR-CARDAPIO	5
 
 Vértices/Arestas de corte	
 UVa-796	1
-SPOJBR-ROTA	1
 SPOJBR-MANUT	1
 UVA-10199	2
-SPOJBR-TUBOS	4
 CF-652E	6
 
 Circuito euleriano	
@@ -42,13 +39,12 @@ CF-732E	6
 
 Circuito euleriano em digrafo	
 SPOJ-WORDS1	1
+
 Árvore geradora mínima	
 SPOJBR-RMAPA11	1
 SPOJBR-REDOTICA	1
-SPOJBR-FRETE08	1
 SPOJBR-INTERLMG	2
 SPOJBR-CIPO	3
-SPOJ-COPA14	3
 UVA-10462	4
 
 Dijkstra	
