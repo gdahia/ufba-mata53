@@ -4,7 +4,7 @@
 
 \usepackage{graphicx,url}
 
-\usepackage[latin1]{inputenc}  
+\usepackage[utf8]{inputenc} 
 
 \sloppy
 
@@ -20,7 +20,7 @@
 
 \begin{abstract}
   A known generalization of the Hamiltonian path problem, the problem of \emph{minimum branch vertices} is to find a spanning tree of a given graph $G$ with the minimum number of vertices with degree greater than 2.
-  It is already estabilished that this problem is not in \emph{APX}; an approximation preserving reduction from the \emph{minimum set cover} problem shows that, unless \emph{P = NP}, it is not approximable better than a multiplicative ratio of $\Omega(\log(n))$ for a graph on $n$ vertices.
+  It is already estabilished that this problem is not in \emph{APX}; an approximation preserving reduction from the \emph{minimum set cover} problem shows that, unless \emph{P = NP}, it is not approximable better than a multiplicative ratio of $\Omega(\log n )$ for a graph on $n$ vertices.
   In this paper, we show, through a combinatorial upper-bound, that an approximation algorithm for another degree-based spanning tree optimization problem is also an approximation for \emph{minimum branch vertices} when the graph is non-traceable.
   In fact, it is the best known approximation for general non-traceable graphs and, based on the assumption that \emph{P $\neq$ NP}, it is the best possible for some classes of graphs.
 \end{abstract}
@@ -31,8 +31,18 @@ While the first reasons for studying degree-based spanning tree optimization pro
 The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
 If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree is itself a Hamiltonian path.
 
-Gargano \emph{et~al.}~\cite{gargano2002, gargano2004}, who first considered the minimum number of branch vertices, showed this problem to be NP-Hard and, for any fixed $k$, that it is NP-Complete to decide if there is a spanning tree with at most $k$ branch vertices in a graph.
+\cite{gargano2002, gargano2004}, who first considered the minimum number of branch vertices in any spanning tree, showed this problem to be NP-Hard and, for any fixed $k$, they showed that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
 They also related the minimum number of branch vertices to other graph theoretic parameters and gave a polynomial-time algorithm for finding a spanning tree with at most one branch vertex (which they called a spanning spider), if the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
+
+\cite{flandrin2008} proved a new condition for the existence of a spanning spider: they showed that it is enough that there are two vertices whose degree-sum is the total number of vertices in the graph minus one.
+
+\cite{salamon2010} proved, through an approximation preserving reduction from the minimum set cover problem, that, unless P = NP, the minimum branch vertices problem is not approximable better than a multiplicative ratio of $\Omega(\log n)$ for a graph on $n$ vertices.
+They also provide the first approximation for minimum branch vertices: given a graph of order $n$ in which every vertex has degree at least $cn$, where $c$ is a real constant, their algorithm finds a spanning tree with at most $3\lceil \log_{\frac{1}{1 - c}}n\rceil + 1$ branch vertices in polynomial time.
+
+\cite{chimani2015} consider the complementary formulation for minimum branch vertices: maximizing the number of vertices whose degree in the spanning tree is at most 2.
+They call it \emph{maximum path-node} problem and say that it has better approximability than minimum branch vertices. 
+For instance, every spanning tree is a 1/2-approximation for maximum path node.
+Their contribution is a 6/11-approximation algorithm and a proof that the maximum path-node problem is APX-Hard.
 
 \bibliographystyle{sbc}
 \bibliography{bib}
