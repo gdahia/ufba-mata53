@@ -6,7 +6,11 @@
 
 \usepackage[utf8]{inputenc} 
 
+\usepackage{amsmath}
+
 \sloppy
+
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \title{A preliminary report for the minimum branch vertices problem}
 
@@ -31,10 +35,10 @@ While the first reasons for studying degree-based spanning tree optimization pro
 The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
 If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree is itself a Hamiltonian path.
 
-\cite{gargano2002, gargano2004}, who first considered the minimum number of branch vertices in any spanning tree, showed this problem to be NP-Hard and, for any fixed $k$, they showed that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
+\cite{gargano2002, gargano2004}, who first considered the minimum number of branch vertices, showed this problem to be NP-Hard and, for any fixed $k$, they showed that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
 They also related the minimum number of branch vertices to other graph theoretic parameters and gave a polynomial-time algorithm for finding a spanning tree with at most one branch vertex (which they called a spanning spider), if the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
 
-\cite{flandrin2008} proved a new condition for the existence of a spanning spider: they showed that it is enough that there are two vertices whose degree-sum is the total number of vertices in the graph minus one.
+\cite{flandrin2008} extended that work, proving a new condition for the existence of a spanning spider in a graph: they showed that it is enough that there are two vertices whose degree-sum is the order of the graph minus one.
 
 \cite{salamon2010} proved, through an approximation preserving reduction from the minimum set cover problem, that, unless P = NP, the minimum branch vertices problem is not approximable better than a multiplicative ratio of $\Omega(\log n)$ for a graph on $n$ vertices.
 They also provide the first approximation for minimum branch vertices: given a graph of order $n$ in which every vertex has degree at least $cn$, where $c$ is a real constant, their algorithm finds a spanning tree with at most $3\lceil \log_{\frac{1}{1 - c}}n\rceil + 1$ branch vertices in polynomial time.
@@ -43,6 +47,33 @@ They also provide the first approximation for minimum branch vertices: given a g
 They call it \emph{maximum path-node} problem and say that it has better approximability than minimum branch vertices. 
 For instance, every spanning tree is a 1/2-approximation for maximum path node.
 Their contribution is a 6/11-approximation algorithm and a proof that the maximum path-node problem is APX-Hard.
+
+In order to solve the minimum branch vertices problem in practice, approaches based on heuristics and integer programming have been proposed.
+\cite{cerulli2009} related minimum branch vertices to the problem of finding a spanning tree that minimizes the degree sum of its branch vertices; they also showed that the problems are not equivalent and provided a single formulation to solve them.
+\cite{cerrone2014} considered the relation of these two problems to minimizing the number of leaves (vertices whose degree is exactly one) and proposed an evolutionary algorithm that attempted to solve them.
+Recent work on heuristics and integer programming has been able to solve multiple instances to optimality -- we refer the reader to \cite{marin2015, melo2016, silvestri2017} for detailed discussions and compared results.
+
+%todo: address other degree based opt probs
+
+In this work, we will attempt to provide approximations for the minimum branch vertices problem for general graphs and claw-free graphs.
+
+\section{Notations, basic definitions and problem statement}
+
+We denote a simple, connected and undirected graph by $G = (V, E)$.
+The set of spanning trees of $G$ is given by $\mathcal{T}(G)$, and unless noted otherwise, $T$ is always a spanning tree of G, that is, $T \in \mathcal{T}(G)$.
+The degree of a vertex $v$ in a graph $G$ is denoted $d_G(v)$.
+$\delta(G) = \min_{v \in V}(d_G(v))$ is the minimum degree of a vertex in $G$ and $\Delta(G) = \max_{v \in V}(d_G(v))$ is the maximum.
+We use the notation in \cite{furer1992} for $\Delta^* = \min_{T \in \mathcal{T}(G)}(\Delta(T))$, the minimum degree of all spanning trees of $G$, and the notation in \cite{gargano2004} for $s(G) = \min_{T \in \mathcal{T}(G)}(|\{v \in V \mid d_T(v) > 2 \}|)$, the minimum number of branch vertices in $G$.
+
+A graph $G$ is \emph{$H$-free} if $H$ is not an induced subgraph of $G$.
+The standard notation for a complete bipartite graph with partition sizes $s$ and $t$ is $K_{s, t}$; we adopt that notation throughout this work.
+Furthermore, $K_{1, 3}$ has a special denomintation for its importance in the study of hamiltonicity -- it is called a \emph{claw}.
+We will use \emph{claw-free} instead of $K_{1,3}$\emph{-free} for legibility.
+
+Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ in which $|\{v \in V \mid d_T(v) > 2 \}|) = s(G)$, or:
+$T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
+
+\section{Methodology}
 
 \bibliographystyle{sbc}
 \bibliography{bib}
