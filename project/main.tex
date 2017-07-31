@@ -7,8 +7,14 @@
 \usepackage[utf8]{inputenc} 
 
 \usepackage{amsmath}
+\usepackage{amsthm}
 
 \sloppy
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 
@@ -26,14 +32,13 @@
   A known generalization of the Hamiltonian path problem, the problem of \emph{minimum branch vertices} is to find a spanning tree of a given graph $G$ with the minimum number of vertices with degree greater than 2.
   It is already estabilished that this problem is not in \emph{APX}; an approximation preserving reduction from the \emph{minimum set cover} problem shows that, unless \emph{P = NP}, it is not approximable better than a multiplicative ratio of $\Omega(\log n )$ for a graph of order $n$.
   In this paper, we show, through a combinatorial upper-bound, that an approximation algorithm for another degree-based spanning tree optimization problem is also an approximation for \emph{minimum branch vertices} when the graph is non-traceable.
-  We also give an algorithm presenting a small improvement for claw-free graphs.
 \end{abstract}
      
 \section{Introduction}
 
 While the first reasons for studying degree-based spanning tree optimization problems were their practical applications in the design of communication networks, they are of theoretical interest for their close relation to the Hamiltonian path problem.
 The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
-If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree is itself a Hamiltonian path.
+If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree itself is a Hamiltonian path.
 
 \cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
 The minimum number of branch vertices is also related to other graph theoretic parameters, such as the independence number.
@@ -45,7 +50,7 @@ It is also in \cite{salamon2010} that the first approximation for minimum branch
 If every vertex in the input graph has degree at least $cn$, where $c$ is a real constant and $n$ is the order of the graph, then there is a polynomial-time algorithm that finds a spanning tree with at most $3\lceil \log_{\frac{1}{1 - c}}n\rceil + 1$ branch vertices. 
 
 The complementary formulation for minimum branch vertices is considered in \cite{chimani2015}, that is, the maximization of the number of vertices whose degree in the spanning tree is at most 2 -- the authors call it the \emph{maximum path-node} problem.
-Maximum path-node has better approximability than minimum branch vertices: since every spanning tree has at least half its nodes as path nodes, every traversal algorithm provides a trivial 1/2-approximation.
+Maximum path-node has better approximability than minimum branch vertices: since half of the vertices of any spanning tree are path nodes, every traversal algorithm that produces a spanning tree provides a trivial 1/2-approximation.
 Their contribution is a 6/11-approximation algorithm and a proof that maximum path-node is APX-Hard.
 
 In order to solve the minimum branch vertices problem in practice, approaches based on heuristics and integer programming have been proposed.
@@ -54,14 +59,13 @@ In order to solve the minimum branch vertices problem in practice, approaches ba
 Recent work on heuristics and integer programming has been able to solve multiple instances to optimality -- we refer the reader to \cite{marin2015, melo2016, silvestri2017} for detailed discussions and compared results.
 
 As the works \cite{cerulli2009, cerrone2014} show, minimum branch vertices is related to other degree-based spanning tree optimization problems.
-\cite{salamon2010} features a number of results and relations for problems such as minimum branch vertices, minimum leaf spanning tree and \emph{maximum forwarding spanning tree} (find a spanning tree with maximum number of vertices whose degree is exactly 2).
+\cite{salamon2010} features a number of results and relations for problems such as minimum branch vertices, minimum leaf spanning tree and \emph{maximum forwarding spanning tree} (find a spanning tree with maximum number of vertices whose degree is exactly 2), among others.
 
 Of particular interest in the area of approximation algorithms for spanning trees is \cite{furer1992}, where the authors were able to find the best possible approximation in polynomial time (assuming that P $\neq$ NP) for the \emph{minimum degree spanning tree} problem, which is to find a spanning tree whose maximal degree is minimum over all spanning trees.
 The given algorithm finds, through local optimizations, a spanning tree whose degree is at most one over the optimum. 
 Their work inspired several others to find algorithms that obtain near-optimal global solutions through local improvement steps; see, for example, \cite{salamon2010, lu1996, chimani2015}.
 
 In this work, we show, through a combinatorial upper-bound, that the approximation algorithm for minimum degree spanning tree in \cite{furer1992} is also an approximation for minimum branch vertices when the input graph is non-traceable.
-When the graph is also claw-free, we give an algorithm that provides a small improvement over the solutions for general graphs.
 Section~\ref{sec:notations} gives notations and basic definitions used in this work and a formal statement of the studied problem. 
 
 \section{Notations, basic definitions and problem statement} \label{sec:notations}
@@ -74,19 +78,30 @@ A vertex is said to be a \emph{branch} in $T$ if $d_T(v) > 2$; it is said to be 
 $\delta(G) = \min_{v \in V}(d_G(v))$ is the minimum degree of a vertex in $G$ and $\Delta(G) = \max_{v \in V}(d_G(v))$ is the maximum.
 We use the notation in \cite{furer1992} for $\Delta^* = \min_{T \in \mathcal{T}(G)}(\Delta(T))$, and the notation in \cite{gargano2004} for $s(G) = \min_{T \in \mathcal{T}(G)}(|\{v \in V \mid d_T(v) > 2 \}|)$.
 
-A graph $G$ is \emph{$H$-free} if $H$ is not an induced subgraph of $G$.
-The standard notation for a complete bipartite graph with partition sizes $s$ and $t$ is $K_{s, t}$; we adopt that notation throughout this work.
-Furthermore, $K_{1, 3}$ has a special denomintation for its importance in the study of hamiltonicity -- it is called a \emph{claw}.
-We will use \emph{claw-free} instead of $K_{1,3}$\emph{-free} for legibility.
+A \emph{forest} is a disjoint set of trees of $G$.
+Let $T$ be any tree of $G$, not necessarily spanning, and $v, u$ be two of its (distinct) vertices.
+$T - v$ is the forest obtained by removing $v$ and all of its edges from $T$.
+$(T - v)(u)$ is the tree of $u$ in $T - v$ and $|(T - v)(u)|$ is its number of vertices.
 
 A \emph{path} is an alternating sequence of distinct vertices and edges.
 The \emph{length of the path} is the number of edges in it.
 A \emph{Hamiltonian path} is a path of length $n - 1$.
 A graph is said to be \emph{traceable} if it admits a Hamiltonian path, it is otherwise \emph{non-traceable}.
 
-Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ of $G$ in which $|\{v \in V \mid d_{T^*}(v) > 2 \}|) = s(G)$, or, in another terms, $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
+Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ of $G$ in which $|\{v \in V \mid d_{T^*}(v) > 2 \}|) = s(G)$.
+Put differently, one must find $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
 
-\section{Methodology}
+\section{Approximations for minimum branch vertices}
+Before proceeding to results regarding the minimum branch vertices, we remind readers a well known fact about trees and conveniently include a proof of it.
+
+\begin{fact}
+  Every tree $T$ of order $n$ has at least one vertex $v$ (which is called a \emph{centroid}) whose removal creates a forest $T - v$ such that, for every vertex $u$ in $T - v$, $|(T - v)(u)| \le \frac{n}{2}$.
+\end{fact}
+\begin{proof}
+  Pick any vertex $v$ of $T$.
+  If $v$ is a centroid, we are done.
+  Otherwise, there is a vertex $u$ in $T - v$ such that $|(T - v)(u)| > \frac{n}{2}$.
+\end{proof}
 
 \bibliographystyle{sbc}
 \bibliography{bib}
