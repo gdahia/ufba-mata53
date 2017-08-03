@@ -41,7 +41,7 @@ While the first reasons for studying degree-based spanning tree optimization pro
 The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
 If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree itself is a Hamiltonian path.
 
-\cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
+\cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, it is also NP-Hard to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
 The minimum number of branch vertices is also related to other graph theoretic parameters, such as the independence number.
 Finally, a polynomial-time algorithm is provided for finding a spanning tree with at most one branch vertex (which they name a \emph{spanning spider}), given that the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
 \cite{flandrin2008} gives another condition for the existence of a spanning spider: having two vertices whose degree-sum is greater than the order of the graph. 
@@ -85,6 +85,19 @@ A graph is said to be \emph{traceable} if it admits a Hamiltonian path, it is ot
 
 Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ of $G$ in which $|\{v \in V \mid d_{T^*}(v) > 2 \}|) = s(G)$.
 Put differently, one must find $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
+
+\section{Outline of methods} \label{sec:methods}
+
+Our main goal in the final version of this work is provide some contribution to the study of degree-based spanning tree optimization problems.
+To achieve that, we will attempt to:
+
+\begin{itemize}
+  \item Generalize the results of \cite{salamon2010} to some broader class of graphs;
+  \item Improve upon the work of \cite{chimani2015} and provide some novel approximation to maximum-path node through local-optimizations, perhaps for some specific class of graphs;
+  \item Inspired by the results in \cite{karpinski1996} for cover problems, find an exact solution for minimum branch vertices which has running time exponential on the number of branch vertices, yielding a polynomial time solution for graphs for which $O(\log n)$ approximations are known;
+  \item Propose heuristics and compare them to the state-of-the-art results;
+  \item Implement the method in \cite{salamon2010} and assess its performance in practical instances.
+\end{itemize}
 
 \bibliographystyle{sbc}
 \bibliography{bib}
