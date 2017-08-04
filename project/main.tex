@@ -39,19 +39,18 @@
 
 While the first reasons for studying degree-based spanning tree optimization problems were their practical applications in the design of communication networks, they are of theoretical interest for their close relation to the Hamiltonian path problem.
 The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
-If the graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, the minimum number of branch vertices (vertices with degree at least 3) in any spanning tree is 0; that spanning tree itself is a Hamiltonian path.
+If a graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, then there is at least one spanning tree of it with no branch vertices (vertices with degree at least 3); any of those trees is also a Hamiltonian path.
 
-\cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, it is also NP-Hard to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
-The minimum number of branch vertices is also related to other graph theoretic parameters, such as the independence number.
-Finally, a polynomial-time algorithm is provided for finding a spanning tree with at most one branch vertex (which they name a \emph{spanning spider}), given that the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
-\cite{flandrin2008} gives another condition for the existence of a spanning spider: having two vertices whose degree-sum is greater than the order of the graph. 
+\cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
+the minimum number of branch vertices is also related to other graph theoretic parameters, such as the independence number, and a polynomial-time algorithm is provided for finding a spanning tree with at most one branch vertex (which the authors name a \emph{spanning spider}), given that the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
+\cite{flandrin2008} gives another condition for the existence of a spanning spider: having two vertices whose degree-sum is greater than the order of the graph.
 
 Through an approximation preserving reduction from the minimum set cover problem, \cite{salamon2010} gives a proof that, unless P = NP, the minimum branch vertices problem is not approximable better than a multiplicative ratio of $\Omega(\log n)$ for a graph on $n$ vertices.
 It is also in \cite{salamon2010} that the first approximation for minimum branch vertices is given.
 If every vertex in the input graph has degree at least $cn$, where $c$ is a real constant and $n$ is the order of the graph, then there is a polynomial-time algorithm that finds a spanning tree with at most $3\lceil \log_{\frac{1}{1 - c}}n\rceil + 1$ branch vertices. 
 
 The complementary formulation for minimum branch vertices, the maximization of the number of vertices whose degree in the spanning tree is at most 2, is considered in \cite{chimani2015} -- the authors call it the \emph{maximum path-node} problem. 
-Maximum path-node has better approximability than minimum branch vertices: since half of the vertices of any spanning tree are path nodes, any algorithm that produces a spanning tree provides a trivial 1/2-approximation.
+Maximum path-node has better approximability than minimum branch vertices: since half of the vertices in any spanning tree are path nodes, any algorithm that produces a spanning tree provides a trivial 1/2-approximation.
 Their contribution is a 6/11-approximation algorithm and a proof that maximum path-node is APX-Hard.
 
 In order to solve the minimum branch vertices problem in practice, approaches based on heuristics and integer programming have been proposed.
@@ -62,21 +61,21 @@ Recent work on heuristics and integer programming has been able to solve multipl
 As \cite{cerulli2009, cerrone2014} show, minimum branch vertices is related to other degree-based spanning tree optimization problems.
 \cite{salamon2010} features a number of results and relations for problems such as minimum branch vertices, minimum leaf spanning tree and \emph{maximum forwarding spanning tree} (find a spanning tree with maximum number of vertices whose degree is exactly 2), among others.
 
-Of particular interest in the area of approximation algorithms for spanning trees is \cite{furer1992}, in which the authors were able to find the best possible approximation in polynomial time (assuming that P $\neq$ NP) for the \emph{minimum degree spanning tree} problem, which is to find a spanning tree whose maximal degree is minimum over all spanning trees.
+Of particular interest in the area of approximation algorithms for spanning trees is \cite{furer1992}, in which the authors were able to find the best possible approximation in polynomial time -- assuming that P $\neq$ NP -- for the problem of finding a spanning tree whose maximal degree is minimum (the \emph{minimum degree spanning tree} problem).
 The given algorithm finds, through local optimizations, a spanning tree whose degree is at most one over the optimum. 
 Their work inspired several others to find algorithms that obtain near-optimal global solutions through local improvement steps; see, for example, \cite{salamon2010, lu1996, chimani2015}.
 
-In this preliminary report, we briefly reviewed the publications addressing minimum branch vertices and related degree-base spanning tree optimization problems.
-We also give a formal statement of the studied problem, alongside the notations and basic definitions used throughout this work, in Section~\ref{sec:notations}, and outline the techniques we intend to use in our approach.
+In this preliminary report, we briefly reviewed the publications addressing minimum branch vertices and related degree-based spanning tree optimization problems.
+We also give a formal statement of the studied problem, alongside the notations and basic definitions used throughout this work, in Section~\ref{sec:notations}, and outline the techniques we intend to use in our approach in Section~\ref{sec:methods}.
 
 \section{Notations, basic definitions and problem statement} \label{sec:notations}
 
 We denote a simple, connected and undirected graph by $G = (V, E)$; $V$ is its set of vertices and $E$ its set of edges.
-The order of the graph is denoted by $n$ and its size is denoted by $m$.
+When clear from the context, the order of the graph $|V|$ is denoted by $n$ and its size $|E|$ is denoted by $m$.
 The set of spanning trees of $G$ is given by $\mathcal{T}(G)$, and unless noted otherwise, $T$ is always a spanning tree of G, \emph{i.e.} $T \in \mathcal{T}(G)$.
 The degree of a vertex $v$ in a graph $G$ is denoted $d_G(v)$.
 A vertex is said to be a \emph{branch} in $T$ if $d_T(v) > 2$; it is said to be a \emph{leaf} if $d_T(v) = 1$.
-We use the notation of \cite{gargano2004} for $s(G) = \min_{T \in \mathcal{T}(G)}(|\{v \in V \mid d_T(v) > 2 \}|)$, the minimum number of branches in any spanning tree of $G$.
+We use the notation in \cite{gargano2004} for $s(G) = \min_{T \in \mathcal{T}(G)}(|\{v \in V \mid d_T(v) > 2 \}|)$, the minimum number of branches in any spanning tree of $G$.
 
 A \emph{path} is an alternating sequence of distinct vertices and edges.
 The \emph{length} of a path is the number of edges in it.
@@ -88,14 +87,14 @@ Put differently, one must find $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V
 
 \section{Outline of methods} \label{sec:methods}
 
-Our main goal in the final version of this work is provide some contribution to the study of degree-based spanning tree optimization problems.
+Our main goal in the final version of this work is provide some contribution to the study of degree-based spanning tree optimization problems, preferrably to the study of minimum branch vertices.
 To achieve that, we will attempt to:
 
 \begin{itemize}
   \item Generalize the results of \cite{salamon2010} to some broader class of graphs;
   \item Improve upon the work of \cite{chimani2015} and provide some novel approximation to maximum-path node through local-optimizations, perhaps for some specific class of graphs;
   \item Inspired by the results in \cite{karpinski1996} for cover problems, find an exact solution for minimum branch vertices which has running time exponential on the number of branch vertices, yielding a polynomial time solution for graphs for which $O(\log n)$ approximations are known;
-  \item Propose heuristics and compare them to the state-of-the-art results;
+  \item Propose heuristics and compare them to the state-of-the-art results; or
   \item Implement the method in \cite{salamon2010} and assess its performance in practical instances.
 \end{itemize}
 
