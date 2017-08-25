@@ -44,7 +44,7 @@
 \end{lemma}
 \begin{proof}
   For any subtree $T$ of $G$ constructed during the algorithm, define the \emph{potential} of $T$ as:
-  $$ \mathcal{P}(T) = \frac{5}{3}|P(T)| - (V(T) - B(T)) $$
+  $$ \mathcal{P}(T) = \frac{5|P(T)|}{3} - (V(T) - B(T)) $$
   We argue that $\mathcal{P}(T) \ge 0$ throughout the algorithm.
   Clearly, $\mathcal{P}(T) \ge 0$ when $T$ is empty.
   Now, suppose some expansion rule was applied to $T$, yielding $T'$.
@@ -54,10 +54,11 @@
   Since $d_G(v) = \Delta(G)$, $|P(T)|$ increases by $\Delta(G)$, $|V(T)|$ increases by $\Delta(G) + 1$ and $|B(T)|$ remains unchanged.
   We then have, since we assumed $\Delta(G) \ge 3$,
   \begin{align*}
-    \Delta \mathcal{P} &= \frac{5}{3}\Delta(G) - (\Delta(G) + 1) \\
-                       &= \frac{1}{3}(5\Delta(G) - 3\Delta(G) - 3) \\
-                       &= \frac{1}{3}(2\Delta(G) - 3) \\
-    \Delta \mathcal{P} &\ge 0
+    \Delta \mathcal{P} &= \frac{5\Delta(G)}{3} - (\Delta(G) + 1) \\
+                       &= \frac{5\Delta(G) - 3\Delta(G) - 3}{3} \\
+                       &= \frac{2\Delta(G) - 3}{3} \\
+                       &\ge \frac{6 - 3}{3} \\
+    \Delta \mathcal{P} &\ge 1
   \end{align*}
 
   If Rule 1 is applied, $|P(T)|$ and $|V(T)|$ both increase by one and $|B(T)|$ remains unchanged.
@@ -66,19 +67,20 @@
   If Rule 2 is applied to vertices $v$ and $w$, assuming $w$ has $x \ge 3$ neighbors in $\overline{V(T)}$ after the expansion of $v$, $|P(T)|$ increases by $x$ (as neither $v$ nor $w$ remain path nodes), $|V(T)|$ increases by $2 + x$ and $|B(T)|$ remains unchanged.
   We have, then,
   \begin{align*}
-    \Delta \mathcal{P} &= \frac{5}{3}x - (x + 2) \\
-                       &= \frac{1}{3}(5x - 3x - 6) \\
-                       &= \frac{2}{3}(x - 3) \\
+    \Delta \mathcal{P} &= \frac{5x}{3} - (x + 2) \\
+                       &= \frac{5x - 3x - 6}{3}\\
+                       &= \frac{2(x - 3)}{3} \\
     \Delta \mathcal{P} &\ge 0
   \end{align*}
 
   Applying Rule 3 to a vertex $v$ with $x \ge 3$ neighbors increases $|P(T)|$ by $x - 1$ (note that $v$ will no longer be a path node), $|V(T)|$ by $x$ and leaves $|B(T)|$ unchanged.
   Therefore,
   \begin{align*}
-    \Delta \mathcal{P} &= \frac{5}{3}(x - 1) - x \\
-                       &= \frac{1}{3}(5x - 5 - 3x) \\
-                       &= \frac{1}{3}(2x - 5) \\
-    \Delta \mathcal{P} &\ge 0
+    \Delta \mathcal{P} &= \frac{5(x - 1)}{3} - x \\
+                       &= \frac{5x - 5 - 3x}{3} \\
+                       &= \frac{2x - 5}{3} \\
+                       &\ge \frac{6 - 5}{3} \\
+    \Delta \mathcal{P} &\ge \frac{1}{3}
   \end{align*}
 
   We divide Rule 4 in two cases.
