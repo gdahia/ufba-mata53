@@ -1,0 +1,98 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[utf8]{inputenc} 
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\sloppy
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\title{On finding spanning trees with few branches}
+
+\author{Gabriel Dahia\inst{1}}
+
+\address{Federal University of Bahia \email{gdahia@gmail.com}}
+
+\begin{document} 
+
+\maketitle
+
+\begin{itemize}
+  \item Rule 1: If $T$ contains a vertex $v$ with only one neighbor in $\overline{V(T)}$, expand $v$;
+  \item Rule 2: If $T$ contains a vertex $v$ with only two neighbors in $\overline{V(T)}$, one of which (call it $w$) would remain with at least 3 neighbors in $\overline{V(T)}$ after the expasion of $v$, then expand $v$ and then expand $w$;
+  \item Rule 3: If $T$ contains a vertex $v$ with three or more neighbors in $\overline{V(T)}$, expand $v$;
+  \item Rule 4: If $T$ contains a vertex $v$ with only two neighbors in $\overline{V(T)}$, expand $v$.
+    If this produces a vertex $w$ in $T$ with only one neighbor in $\overline{V(T)}$, expand $w$; otherwise, mark $v$ blue;
+  \item Rule 5: If $T$ is empty, expand the highest degree node of $V(G)$.
+\end{itemize}
+
+\begin{lemma}
+  Let $T$ be the spanning tree of $G$ constructed by Algorithm 1 and let $B(T)$ be the set of vertices marked blue in $T$.
+  Then
+  $$ P(T) \ge \frac{3(V(T) - B(T))}{5} $$
+\end{lemma}
+\begin{proof}
+  For any subtree $T$ of $G$ constructed during the algorithm, define the \emph{potential} of $T$ as:
+  $$ \mathcal{P}(T) = \frac{5}{3}|P(T)| - (V(T) - B(T)) $$
+  We argue that $\mathcal{P}(T) \ge 0$ throughout the algorithm.
+  Clearly, $\mathcal{P}(T) \ge 0$ when $T$ is empty.
+  Now, suppose some expansion rule was applied to $T$, yielding $T'$.
+  It is enough to show that $\Delta \mathcal{P} = \mathcal{P}(T') - \mathcal{P}(T) \ge 0$.
+
+  Rule 5 is only applied once -- let $v$ be the vertex to which it is applied.
+  Since $d_G(v) = \Delta(G)$, $|P(T)|$ increases by $\Delta(G)$, $|V(T)|$ increases by $\Delta(G) + 1$ and $|B(T)|$ remains unchanged.
+  We then have, since we assumed $\Delta(G) \ge 3$,
+  \begin{align*}
+    \Delta \mathcal{P} &= \frac{5}{3}\Delta(G) - (\Delta(G) + 1) \\
+                       &= \frac{1}{3}(5\Delta(G) - 3\Delta(G) - 3) \\
+                       &= \frac{1}{3}(2\Delta(G) - 3) \\
+    \Delta \mathcal{P} &\ge 0
+  \end{align*}
+
+  If Rule 1 is applied, $|P(T)|$ and $|V(T)|$ both increase by one and $|B(T)|$ remains unchanged.
+  Then, we have $\Delta \mathcal{P} = \frac{5}{3} - 1 = \frac{2}{3} \ge 0$.
+
+  If Rule 2 is applied to vertices $v$ and $w$, assuming $w$ has $x \ge 3$ neighbors in $\overline{V(T)}$ after the expansion of $v$, $|P(T)|$ increases by $x$ (as neither $v$ nor $w$ remain path nodes), $|V(T)|$ increases by $2 + x$ and $|B(T)|$ remains unchanged.
+  We have, then,
+  \begin{align*}
+    \Delta \mathcal{P} &= \frac{5}{3}x - (x + 2) \\
+                       &= \frac{1}{3}(5x - 3x - 6) \\
+                       &= \frac{2}{3}(x - 3) \\
+    \Delta \mathcal{P} &\ge 0
+  \end{align*}
+
+  Applying Rule 3 to a vertex $v$ with $x \ge 3$ neighbors increases $|P(T)|$ by $x - 1$ (note that $v$ will no longer be a path node), $|V(T)|$ by $x$ and leaves $|B(T)|$ unchanged.
+  Therefore,
+  \begin{align*}
+    \Delta \mathcal{P} &= \frac{5}{3}(x - 1) - x \\
+                       &= \frac{1}{3}(5x - 5 - 3x) \\
+                       &= \frac{1}{3}(2x - 5) \\
+    \Delta \mathcal{P} &\ge 0
+  \end{align*}
+
+  We divide Rule 4 in two cases.
+  The first case is when the expansion of $v$ produces a vertex $w$ in $T$ with only a single neighbor in $\overline{V(T)}$.
+  Expanding $v$ and then expanding $w$ increases $|P(T)|$ by 2, $|V(T)|$ by 3 and leaves $|B(T)|$ unchanged.
+  Hence, $\Delta \mathcal{P}~=~\frac{10}{3}~-~3~=~\frac{1}{3}~\ge~0$.
+
+  The second case, we expand $v$ and mark it blue.
+  This increases both $|P(T)|$ and $|B(T)|$ by 1 and $|V(T)|$ by 2: $\Delta \mathcal{P} = \frac{5}{3} - (2 - 1) = \frac{2}{3} \ge 0$.
+
+  Inductively, this shows that, when the algorithm produces a spanning tree $T$, $\mathcal{P}(T) = \frac{5}{3}|P(T)| - (V(T) - B(T)) \ge 0$.
+  Thus,
+  $$ P(T) \ge \frac{3(V(T) - B(T))}{5} $$
+
+\end{proof}
+
+\end{document}
