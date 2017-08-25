@@ -28,13 +28,16 @@
 
 \maketitle
 
+\section{Approximation}
+
 \begin{itemize}
   \item Rule 1: If $T$ contains a vertex $v$ with only one neighbor in $\overline{V(T)}$, expand $v$;
   \item Rule 2: If $T$ contains a vertex $v$ with only two neighbors in $\overline{V(T)}$, one of which (call it $w$) would remain with at least 3 neighbors in $\overline{V(T)}$ after the expasion of $v$, then expand $v$ and then expand $w$;
   \item Rule 3: If $T$ contains a vertex $v$ with three or more neighbors in $\overline{V(T)}$, expand $v$;
-  \item Rule 4: If $T$ contains a vertex $v$ with only two neighbors in $\overline{V(T)}$, expand $v$.
+  \item Rule 4: If $T$ contains two vertices $v$ and $u$, each with only two and the same neighbors in $\overline{V(T)}$, assign $v$ one neighbor and $u$ the other, arbitrarily;
+  \item Rule 5: If $T$ contains a vertex $v$ with only two neighbors in $\overline{V(T)}$, expand $v$.
     If this produces a vertex $w$ in $T$ with only one neighbor in $\overline{V(T)}$, expand $w$; otherwise, mark $v$ blue;
-  \item Rule 5: If $T$ is empty, expand the highest degree node of $V(G)$.
+  \item Rule 6: If $T$ is empty, expand the highest degree node of $V(G)$.
 \end{itemize}
 
 \begin{lemma}
@@ -50,7 +53,7 @@
   Now, suppose some expansion rule was applied to $T$, yielding $T'$.
   It is enough to show that $\Delta \mathcal{P} = \mathcal{P}(T') - \mathcal{P}(T) \ge 0$.
 
-  Rule 5 is only applied once -- let $v$ be the vertex to which it is applied.
+  Rule 6 is only applied once -- let $v$ be the vertex to which it is applied.
   Since $d_G(v) = \Delta(G)$, $|P(T)|$ increases by $\Delta(G)$, $|V(T)|$ increases by $\Delta(G) + 1$ and $|B(T)|$ remains unchanged.
   We then have, since we assumed $\Delta(G) \ge 3$,
   \begin{align*}
@@ -83,7 +86,10 @@
     \Delta \mathcal{P} &\ge \frac{1}{3}
   \end{align*}
 
-  We divide Rule 4 in two cases.
+  If Rule 4 is applied, both $|P(T)|$ and $|V(T)|$ increase by 2 and $|B(T)|$ remains the same.
+  Then, $\Delta \mathcal{P} = \frac{10}{3} - 2 = \frac{4}{3} \ge 0$.
+
+  We divide Rule 5 in two cases.
   The first case is when the expansion of $v$ produces a vertex $w$ in $T$ with only a single neighbor in $\overline{V(T)}$.
   Expanding $v$ and then expanding $w$ increases $|P(T)|$ by 2, $|V(T)|$ by 3 and leaves $|B(T)|$ unchanged.
   Hence, $\Delta \mathcal{P}~=~\frac{10}{3}~-~3~=~\frac{1}{3}~\ge~0$.
@@ -95,6 +101,34 @@
   Thus,
   $$ P(T) \ge \frac{3(V(T) - B(T))}{5} $$
 
+\end{proof}
+
+\begin{lemma} \label{lemma:sep}
+  For any $i > 0$, the set of gray vertices of $T_i$ is a separator of $G$.
+  That is, as $T_i$ is built, there is no edge incident to both a black vertex and a white vertex.
+\end{lemma}
+
+\begin{proof}
+  Suppose, by contradiction, that there $u \in V(T_i)$ so that, as $T_i$ is built, $v$ is white and a neighbor of $u$.
+  Since $u$ is black, it has either been expanded in some tree $T_j$, or it has been assigned one of its neighbors while its other neighbor was assigned to some vertex that is also black in $T_j$, $j \le i$.
+  If $u$ was expanded, by definition of the expansion rule, all of its neighbors are colored gray.
+  Similarly, both neighbors of $u$ are gray when it was colored black by applying Rule 4.
+  Vertex $v$, then, is colored gray as $T_j$ is built.
+  It is clear by the algorithm's definition that once a vertex is colored gray, its color never returns to white.
+  Therefore, $v$ cannot be both white and a neighbor of $u$.
+\end{proof}
+
+\begin{lemma}
+  A vertex has no neighbor in a higher layer.
+\end{lemma}
+
+\begin{proof}
+  % mostrar que a prioridade das regras (primeiro pegar o q tem 3, depois oq tem vizinhos total sobrepostos e depois sobreposicao simples), nessa ordem, impede vizinhos em camadas superiores
+  Suppose, by contradiction, that a vertex $v$ has a single neighbor in a higher layer $i$.
+  By Lemma~\ref{lemma:sep}, this is only possible if, when $u$, the $i$th-blue vertex, was expanded, $v$ was gray.
+  But if Rule 4 was applied, then all gray vertices had 2 neighbors in $\overline{V(T)}$.
+  If $v$ had a common neighbor with $u$, then expanding $u$ would leave $v$ with only one neighbor in $\overline{V(T)}$.
+  Therefore, Rule 4 could be applied without marking $u$ blue; a contradiction.
 \end{proof}
 
 \end{document}
