@@ -1,7 +1,6 @@
-#include <cassert>
+#include "minbst.hpp"
+
 #include <queue>
-#include <utility>
-#include <vector>
 
 void mark_dfs(const int v, const std::vector<int>* adj,
               std::vector<bool>& marked, std::queue<int>& s) {
@@ -12,7 +11,7 @@ void mark_dfs(const int v, const std::vector<int>* adj,
     if (!marked[u]) mark_dfs(u, adj, marked, s);
 }
 
-std::vector<std::pair<int, int>> minbst(const int n, const int m,
+std::vector<std::pair<int, int>> minbst(const int n,
                                         const std::vector<int>* adj) {
   // initialization
   // initialize empty tree
@@ -35,6 +34,10 @@ std::vector<std::pair<int, int>> minbst(const int n, const int m,
     int v = 0;
     for (int i = 0; i < n; i++)
       if (a_degree[i] > a_degree[v]) v = i;
+
+    // update A
+    A -= a_degree[v];
+    if (white[v]) A--;
 
     // update A degrees and add edges to forest H
     for (int u : adj[v])
@@ -61,7 +64,6 @@ std::vector<std::pair<int, int>> minbst(const int n, const int m,
 
     // add v to C
     white[v] = false;
-    assert(a_degree[v] == 0);
   }
 
   // second phase - join trees
@@ -75,7 +77,7 @@ std::vector<std::pair<int, int>> minbst(const int n, const int m,
     // check if v has G neighbor not yet in tree
     for (int u : adj[v])
       if (!marked[u]) {
-        mark_dfs(0, H_adj, marked, s);
+        mark_dfs(u, H_adj, marked, s);
         tree.emplace_back(v, u);
       }
   }
