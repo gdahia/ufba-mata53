@@ -1,6 +1,7 @@
 \documentclass[14pt]{beamer}
 
 \usepackage[utf8]{inputenc}
+\usetheme{Berlin}
 
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -18,34 +19,30 @@
 
 \begin{frame}
 \frametitle{Definições}
-
-\begin{itemize}
-\item $G = (V, E)$: simples, conexo e não-direcionado;
-\item $T \in \mathcal{T}(G)$: árvore geradora de $G$;
-\item \emph{Branch}: vértice com grau superior a 2;
-\item $b(T)$: número de \emph{branches} em $T$.
-\end{itemize}
-
+  \begin{itemize}
+    \item $G = (V, E)$: simples, conexo e não-direcionado, $n$ vértices e $m$ arestas;
+    \item $T \in \mathcal{T}(G)$: árvore geradora de $G$;
+    \item \emph{Branch}: vértice com grau superior a 2;
+    \item $b(T)$: número de \emph{branches} em $T$.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Problema MinBST}
-
-Dado $G = (V, E)$, queremos $T^*$ tal que:
-$$T^* = \argmin_{T \in \mathcal{T}(G)}(b(T))$$
-
+  \begin{block}{MinBST}
+    Dado $G = (V, E)$, queremos $T^*$ tal que:
+    $$T^* = \argmin_{T \in \mathcal{T}(G)}(b(T))$$
+  \end{block}
 \end{frame}
 
 \begin{frame}
 \frametitle{Problema MinBST}
-
   \begin{center}
     \includegraphics<1>[width=0.75\textwidth]{example/example-01.png}
     \includegraphics<2>[width=0.75\textwidth]{example/example-02.png}
     \includegraphics<3>[width=0.75\textwidth]{example/example-03.png}
     \includegraphics<4>[width=0.75\textwidth]{example/example-04.png}
   \end{center}
-
 \end{frame}
 
 \begin{frame}
@@ -62,18 +59,85 @@ $$T^* = \argmin_{T \in \mathcal{T}(G)}(b(T))$$
   \begin{itemize}
     \item Caminho Hamiltoniano;
     \item Minimizar folhas -- maximizar vértices internos;
-    \item \emph{Minimum connnected dominating set};
-    \item \emph{Maximum path node problem}.
+    \item \emph{Maximum path node problem};
+    \item \emph{Minimum connnected dominating set}.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Abordagens}
   \begin{itemize}
-    \item Problema NP-Díficil;
+    \item Problema NP-Difícil;
     \item Programação inteira e heurísticas;
-    \item Garantias?
-    \item \emph{Algoritmos aproximativos}.
+    \item Formulação complementar;
+    \item Algoritmos exatos?
+    \item Aproximativos?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Aproximabilidade}
+  \begin{itemize}
+    \item Valor ótimo igual a 0;
+    \item Redução de \emph{Minimum set cover}: MinBST~$\not\in$~APX;
+    \item Se P $\ne$ NP, então melhor aproximação é $\Omega(\log n)$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algoritmo aproximativo}
+  \begin{itemize}
+    \item $G$ uniformemente denso: $\delta(G) \ge cn$, $c \in [0, 1)$;
+    \item Algoritmo guloso;
+    \item $b(T) \le 3\lceil \log_{\frac{1}{1 - c}}n\rceil - 1$;
+    \item $b(T) \in O(\log n)$;
+    \item Se $G$ não admite caminho hamiltoniano, melhor aproximação.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algoritmo aproximativo}
+  \begin{center}
+    \includegraphics<1>[width=0.75\textwidth]{example/salamon/salamon-01.png}
+    \includegraphics<2>[width=0.75\textwidth]{example/salamon/salamon-02.png}
+    \includegraphics<3>[width=0.75\textwidth]{example/salamon/salamon-03.png}
+    \includegraphics<4>[width=0.75\textwidth]{example/salamon/salamon-04.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algoritmo aproximativo}
+  Lemas:
+  \begin{enumerate}
+    \item $i$-ésimo passo, existe vértice com $ca_i$ vizinhos brancos;
+    \item $O(1)$ \emph{branches} por passo;
+    \item $O(\log n)$ passos no total;
+    \item conecta componentes com $O(\log n)$.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Resultado mais geral?}
+  \begin{itemize}
+    \item<1> E se $\frac{m}{n} \ge cn$, $c \in [0, \frac{1}{2})$?
+    \item<1> Se $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge c|A|$, então vale o Lema 1;
+    \item<1> Qual vértice escolher?
+    \item<1,3,5> Escolha maximal viola Lema 1;
+    \item<1,3,5> Escolha minimal viola Lema 3.
+    \item<2,3> E se $G$ não possuir $K_3$?
+    \item<3> Não.
+    \item<4-> E se escolher dois de uma vez?
+    \item<5> Também não.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conclusões}
+  \begin{itemize}
+    \item MinBST é NP-Difícil;
+    \item Aproximação restrita;
+    \item Exatos e aproximativos desconhecidos, mesmo quando restrito a classes;
+    \item Afetado pela estrutura geral do grafo.
   \end{itemize}
 \end{frame}
 
