@@ -3,3 +3,7 @@ main.pdf
 *.log
 *.bbl
 *.blg
+*.nav
+*.snm
+*.toc
+implementation/MBV_Instances

@@ -1,0 +1,51 @@
+\documentclass[14pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\title{Minimum branching spanning tree}
+\subtitle{Trabalho prático - MATA53}
+\author{Gabriel Dahia}
+\institute{Universidade Federal da Bahia}
+\date{2017}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Definições}
+
+\begin{itemize}
+\item $G = (V, E)$: simples, conexo e não-direcionado;
+\item $T \in \mathcal{T}(G)$: árvore geradora de $G$;
+\item \emph{Branch}: vértice com grau superior a 2;
+\item $b(T)$: número de \emph{branches} em $T$.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Problema MinBST}
+
+Dado $G = (V, E)$, queremos $T^*$ tal que:
+$$T^* = \argmin_{T \in \mathcal{T}(G)}(b(T))$$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Problema MinBST}
+
+  \begin{center}
+    \includegraphics<1>[width=0.75\textwidth]{example/example-01.png}
+    \includegraphics<2>[width=0.75\textwidth]{example/example-02.png}
+    \includegraphics<3>[width=0.75\textwidth]{example/example-03.png}
+    \includegraphics<4>[width=0.75\textwidth]{example/example-04.png}
+  \end{center}
+
+\end{frame}
+
+\end{document}
