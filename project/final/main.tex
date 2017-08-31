@@ -18,7 +18,7 @@
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 
-\title{On finding spanning trees with few branches}
+\title{Minimum branch vertices problem}
 
 \author{Gabriel Dahia\inst{1}}
 
@@ -28,115 +28,105 @@
 
 \maketitle
 
-\section{Approximation}
+\begin{abstract}
+  A known generalization of the Hamiltonian path problem, the problem of \emph{minimum branch vertices} is to find a spanning tree of a given graph $G$ with the minimum number of vertices with degree greater than 2.
+  It is already estabilished that this problem is not in \emph{APX}; an approximation preserving reduction from the \emph{minimum set cover} problem shows that, unless \emph{P = NP}, it is not approximable better than a multiplicative ratio of $\Omega(\log n )$ for a graph of order $n$.
+  This is a report made for a term project in class MATA53-UFBA.
+  We briefly review the literature on minimum branch vertices and degree-based spanning tree optimization problems, give a formal statement of the minimum branch vertices problem and outline the techniques we intend to use in our approach.
+\end{abstract}
+     
+\section{Introduction}
 
-\begin{itemize}
-  \item Rule 1: If $T$ contains a vertex $v$ with only one white neighbor , expand $v$;
-  \item Rule 2: If $T$ contains a vertex $v$ with only two white neighbors, one of which (call it $w$) would remain with at least 3 white neighbors in after the expasion of $v$, then expand $v$ and then expand $w$;
-  \item Rule 3: If $T$ contains a vertex $v$ with three or more white neighbors, expand $v$;
-  \item Rule 4: If $T$ contains two vertices $v$ and $u$, each with only two and the same white neighbors, assign $v$ one neighbor and $u$ the other, arbitrarily;
-  \item Rule 5: If $T$ contains a vertex $v$ with only two white neighbors, expand $v$.
-    If this produces a vertex $w$ in $T$ with only one white neighbor, expand $w$; otherwise, mark $v$ blue;
-  \item Rule 6: If $T$ is empty, expand the highest degree node of $V(G)$.
-\end{itemize}
+While the first reasons for studying degree-based spanning tree optimization problems were their practical applications in the design of communication networks, they are of theoretical interest for their close relation to the Hamiltonian path problem.
+The \emph{minimum branch vertices problem}, specifically, asks for the spanning tree $T$ of a given graph $G$ such that the number of vertices with degree higher than 2 in $T$ is minimum.
+If a graph is \emph{traceable}, \emph{i.e.} if it admits a Hamiltonian path, then there is at least one spanning tree of it with no branch vertices (vertices with degree at least 3); any of those trees is also a Hamiltonian path.
 
-\begin{lemma}
-  Let $T$ be the spanning tree of $G$ constructed by Algorithm 1 and let $B(T)$ be the set of vertices marked blue in $T$.
-  Then
-  $$ P(T) \ge \frac{3(V(T) - B(T))}{5} $$
-\end{lemma}
-\begin{proof}
-  For any subtree $T$ of $G$ constructed during the algorithm, define the \emph{potential} of $T$ as:
-  $$ \mathcal{P}(T) = \frac{5|P(T)|}{3} - (V(T) - B(T)) $$
-  We argue that $\mathcal{P}(T) \ge 0$ throughout the algorithm.
-  Clearly, $\mathcal{P}(T) \ge 0$ when $T$ is empty.
-  Now, suppose some expansion rule was applied to $T$, yielding $T'$.
-  It is enough to show that $\Delta \mathcal{P} = \mathcal{P}(T') - \mathcal{P}(T) \ge 0$.
+\cite{gargano2004}, where the problem of minimum branch vertices was first considered, shows that this problem is NP-Hard and, for any fixed $k$, that it is NP-Complete to decide if a graph admits a spanning tree with at most $k$ branch vertices. 
+This paper also relates the minimum number of branch vertices to other graph theoretic parameters, such as the independence number, and provides a polynomial-time algorithm for finding a spanning tree with at most one branch vertex (which the authors name a \emph{spanning spider}), given that the minimum degree-sum of any 3 element independent set is at least the number of vertices in the graph minus one.
+\cite{flandrin2008} gives another condition for the existence of a spanning spider: having two vertices whose degree-sum is greater than the order of the graph.
 
-  Rule 6 is only applied once -- let $v$ be the vertex to which it is applied.
-  Since $d_G(v) = \Delta(G)$, $|P(T)|$ increases by $\Delta(G)$, $|V(T)|$ increases by $\Delta(G) + 1$ and $|B(T)|$ remains unchanged.
-  We then have, since we assumed $\Delta(G) \ge 3$,
-  \begin{align*}
-    \Delta \mathcal{P} &= \frac{5\Delta(G)}{3} - (\Delta(G) + 1) \\
-                       &= \frac{5\Delta(G) - 3\Delta(G) - 3}{3} \\
-                       &= \frac{2\Delta(G) - 3}{3} \\
-                       &\ge \frac{6 - 3}{3} \\
-    \Delta \mathcal{P} &\ge 1
-  \end{align*}
+Through an approximation preserving reduction from the minimum set cover problem, \cite{salamon2010} gives a proof that, unless P = NP, the minimum branch vertices problem is not approximable better than a multiplicative ratio of $\Omega(\log n)$ for a graph on $n$ vertices.
+It is also in \cite{salamon2010} that the first approximation for minimum branch vertices is given: if every vertex in the input graph has degree at least $cn$, where $c$ is a real constant and $n$ is the order of the graph (the graph is then said to be \emph{evenly dense}), then there is a polynomial-time algorithm that finds a spanning tree with at most $3\lceil \log_{\frac{1}{1 - c}}n\rceil + 1$ branch vertices. 
 
-  If Rule 1 is applied, $|P(T)|$ and $|V(T)|$ both increase by one and $|B(T)|$ remains unchanged.
-  Then, we have $\Delta \mathcal{P} = \frac{5}{3} - 1 = \frac{2}{3} \ge 0$.
+The complementary formulation for minimum branch vertices, the maximization of the number of vertices whose degree in the spanning tree is at most 2, is considered in \cite{chimani2015} -- the authors call it the \emph{maximum path-node} problem. 
+Maximum path-node has better approximability than minimum branch vertices: since half of the vertices in any spanning tree are path nodes, any algorithm that produces a spanning tree provides a trivial 1/2-approximation.
+Their contribution is a 6/11-approximation algorithm and a proof that maximum path-node is APX-Hard.
 
-  If Rule 2 is applied to vertices $v$ and $w$, assuming $w$ has $x \ge 3$ white neighbors after the expansion of $v$, $|P(T)|$ increases by $x$ (as neither $v$ nor $w$ remain path nodes), $|V(T)|$ increases by $2 + x$ and $|B(T)|$ remains unchanged.
-  We have, then,
-  \begin{align*}
-    \Delta \mathcal{P} &= \frac{5x}{3} - (x + 2) \\
-                       &= \frac{5x - 3x - 6}{3}\\
-                       &= \frac{2(x - 3)}{3} \\
-    \Delta \mathcal{P} &\ge 0
-  \end{align*}
+In order to solve the minimum branch vertices problem in practice, approaches based on heuristics and integer programming have been proposed.
+\cite{cerulli2009} relates minimum branch vertices to the problem of finding a spanning tree that minimizes the degree sum of its branch vertices (\emph{minimum degree sum}); they also showed that the problems are not equivalent and provided a single formulation to solve them.
+\cite{cerrone2014} considers the relation of these two problems to minimizing the number of vertices whose degree is exactly one (\emph{minimum leaf spanning tree}) and proposed an evolutionary algorithm that attempted to solve them.
+Recent work on heuristics and integer programming has been able to solve multiple instances to optimality -- we refer the reader to \cite{marin2015, melo2016, silvestri2017} for detailed discussions and compared results.
 
-  Applying Rule 3 to a vertex $v$ with $x \ge 3$ neighbors increases $|P(T)|$ by $x - 1$ (note that $v$ will no longer be a path node), $|V(T)|$ by $x$ and leaves $|B(T)|$ unchanged.
-  Therefore,
-  \begin{align*}
-    \Delta \mathcal{P} &= \frac{5(x - 1)}{3} - x \\
-                       &= \frac{5x - 5 - 3x}{3} \\
-                       &= \frac{2x - 5}{3} \\
-                       &\ge \frac{6 - 5}{3} \\
-    \Delta \mathcal{P} &\ge \frac{1}{3}
-  \end{align*}
+As \cite{cerulli2009, cerrone2014} show, minimum branch vertices is related to other degree-based spanning tree optimization problems.
+\cite{salamon2010} features a number of results and relations for problems such as minimum branch vertices, minimum leaf spanning tree and \emph{maximum forwarding spanning tree} (find a spanning tree with maximum number of vertices whose degree is exactly 2), among others.
 
-  If Rule 4 is applied, both $|P(T)|$ and $|V(T)|$ increase by 2 and $|B(T)|$ remains the same.
-  Then, $\Delta \mathcal{P} = \frac{10}{3} - 2 = \frac{4}{3} \ge 0$.
+Of particular interest in the area of approximation algorithms for spanning trees is \cite{furer1992}, in which the authors were able to find the best possible approximation in polynomial time -- assuming that P $\neq$ NP -- for the problem of finding a spanning tree whose maximal degree is minimum (the \emph{minimum degree spanning tree} problem).
+The given algorithm finds, through local optimizations, a spanning tree whose degree is at most one over the optimum. 
+Their work inspired several others to find algorithms that obtain near-optimal global solutions through local improvement steps; see, for example, \cite{salamon2010, lu1996, chimani2015}.
 
-  We divide Rule 5 in two cases.
-  The first case is when the expansion of $v$ produces a vertex $w$ in $T$ with only a single white neighbor.
-  Expanding $v$ and then expanding $w$ increases $|P(T)|$ by 2, $|V(T)|$ by 3 and leaves $|B(T)|$ unchanged.
-  Hence, $\Delta \mathcal{P}~=~\frac{10}{3}~-~3~=~\frac{1}{3}~\ge~0$.
+In this report, we briefly reviewed the publications addressing minimum branch vertices and related degree-based spanning tree optimization problems.
+We also give a formal statement of the studied problem, alongside the notations and basic definitions used throughout this work, in Section~\ref{sec:notations}, and outline the techniques we used while approaching the problem in Section~\ref{sec:methods}.
 
-  The second case, we expand $v$ and mark it blue.
-  This increases both $|P(T)|$ and $|B(T)|$ by 1 and $|V(T)|$ by 2: $\Delta \mathcal{P} = \frac{5}{3} - (2 - 1) = \frac{2}{3} \ge 0$.
+\section{Notations, basic definitions and problem statement} \label{sec:notations}
 
-  Inductively, this shows that, when the algorithm produces a spanning tree $T$, $\mathcal{P}(T) = \frac{5}{3}|P(T)| - (V(T) - B(T)) \ge 0$.
-  Thus,
-  $$ P(T) \ge \frac{3(V(T) - B(T))}{5} $$
+We denote a simple, connected and undirected graph by $G = (V, E)$; $V$ is its set of vertices and $E$ its set of edges.
+The subgraph induced by a subset of vertices $A$ is denoted $G[A]$ and the subgraph induced by a $(A, B)$ cut is denoted by $G[A, B]$.
+When clear from the context, the order of the graph $|V|$ is denoted by $n$ and its size $|G|$ is denoted by $m$.
+The set of spanning trees of $G$ is given by $\mathcal{T}(G)$, and unless noted otherwise, $T$ is always a spanning tree of G, \emph{i.e.} $T \in \mathcal{T}(G)$.
+The degree of a vertex $v$ in a graph $G$ is denoted $d_G(v)$.
+A vertex is said to be a \emph{branch} in $T$ if $d_T(v) > 2$; it is said to be a \emph{leaf} if $d_T(v) = 1$.
+We use the notation in \cite{gargano2004} for $s(G) = \min_{T \in \mathcal{T}(G)}(|\{v \in V \mid d_T(v) > 2 \}|)$, the minimum number of branches in any spanning tree of $G$.
 
-\end{proof}
+A \emph{path} is an alternating sequence of distinct vertices and edges.
+The \emph{length} of a path is the number of edges in it.
+A \emph{Hamiltonian path} is a path of length $n - 1$.
+A graph is said to be \emph{traceable} if it admits a Hamiltonian path, it is otherwise \emph{non-traceable}.
 
-\begin{lemma} \label{lemma:sep}
-  For any $i > 0$, the set of gray vertices of $T_i$ is a separator of $G$.
-  That is, as $T_i$ is built, there is no edge incident to both a black vertex and a white vertex.
-\end{lemma}
+Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ of $G$ in which $|\{v \in V \mid d_{T^*}(v) > 2 \}|) = s(G)$.
+Put differently, one must find $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
 
-\begin{proof}
-  Suppose, by contradiction, that there is $u \in V(T_i)$ so that, as $T_i$ is built, $v$ is white and a neighbor of $u$.
-  Since $u$ is black, it has either been expanded in some tree $T_j$, or it has been assigned one of its neighbors while its other neighbor was assigned to some vertex that is also black in $T_j$, $j \le i$.
-  If $u$ was expanded, by definition of the expansion rule, all of its neighbors are colored gray.
-  Similarly, both neighbors of $u$ are gray when it was colored black by applying Rule 4.
-  Vertex $v$, then, is colored gray as $T_j$ is built.
-  It is clear by the algorithm's definition that once a vertex is colored gray, its color never returns to white.
-  Therefore, $v$ cannot be both white and a neighbor of $u$.
-\end{proof}
+\section{Methods} \label{sec:methods}
 
-\begin{lemma}
-  A vertex has no neighbor in a higher layer.
+For this project, we focused on attempting to extend the algorithm in \cite{salamon2010} for minimum branch vertices (hereon called MinBST Algorithm) in evenly dense graphs to a broader class of graphs.
+Specifically, we attempted to generalize the upper bound given for that greedy algorithm to the class of globally dense graphs, \emph{i.e.} graphs that have $\frac{m}{n} \ge cn$, for some $c$.
+
+MinBST Algorithm builds a spanning forest greedily picking the vertex with most neighbors not yet in the forest and, after the spanning forest is built, connects it with specific edges, resulting in a spanning tree with at most $O(\log n)$ branches.
+In order to efficiently do so, it keeps three disjoint sets of vertices.
+In this work, for practical reasons, we are going to refer to set A, the set of vertices not yet in the spanning forest, as the set of white vertices, to set B, the set of vertices in the spanning forest that have at least one white neighbor, as the set of gray vertices, and to set C as the set of black vertices.
+
+In our attempt to come up with an algorithm similar to MinBST Algorithm but applicable to globally dense graphs, we divided the underlying lemmas required to prove the main result regarding MinBST Algorithm's correctness into four more general lemmas:
+
+\begin{enumerate}
+  \item At iteration $i$ of building the spanning forest, there is a vertex with at least $ca_i$ white neighbors, where $a_i$ denotes the number of white vertices;
+  \item Every iteration of building the spanning forest creates at most $O(1)$ branches;
+  \item There are at most $O(\log n)$ iterations of building the spanning forest;
+  \item The connected components of the created spanning forest can be connected inducing at most $O(\log n)$ branches.
+\end{enumerate}
+
+We were able to prove Lemma~\ref{lemma1}:
+
+\begin{lemma} \label{lemma1}
+  Let $G = (V, E)$ be a simple, undirected graph and let $A$ and $B$ be two disjoint set of its vertices.
+  If $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$, then there is a vertex with at least $w$ neighbors in $A$.
 \end{lemma}
 
 \begin{proof}
-  % mostrar que a prioridade das regras (primeiro pegar o q tem 3, depois oq tem vizinhos total sobrepostos e depois sobreposicao simples), nessa ordem, impede vizinhos em camadas superiores
-  Suppose, by contradiction, that a vertex $v$ has some neighbors in a higher layer.
-  Let $i$ be the smallest index of a higher layer for which $v$ has a neighbor and let $u$ be the $i$th-blue marked vertex.
-  When $u$ is marked blue, vertex $v$ cannot have been expanded or assigned, for this would make its neighbors reside in layers equal or lower than its own.
-  We divide the remainder of the proof according to the supposed number of neighbors $v$ has in some higher layer.
-
-  Vertex $v$ cannot have 3 or more neighbors in a higher layer, for if it did, Rule 3 could have been applied before $u$ was marked blue, a contradiction.
-  Therefore, $v$ can have at most 2 neighbors in higher layers.
-
-  Since $v$ has not been expanded or assigned and $v$ has a vertex in a layer $i$, by Lemma~\ref{lemma:sep} $v$ is gray when $u$ is marked blue.
-  The number of white neighbors of $v$ immediately before $u$ is marked blue is then exactly two, otherwise $v$ would have been expanded instead of $u$.
-  It is also impossible for the expansion of $u$ to color one of $v$'s white neighbors grey: in this case, the aplication of Rule 4 or Rule 5 without marking $u$ blue would have been preferred.
-  Hence, a white neighbor of $v$ can only be colored grey as a result of the application of Rules 1-4 and Rule 5 without marking another vertex blue.
-
+  Denote by $e(v, A)$ the number of neighbors vertex $v$ has in vertex set $A$.
+  Suppose, by contradiction, that $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$ is not enough to assure the existence of vertex $v$ with $e(v, A) \ge w$.
+  This means that, for every $v$, we have $e(v, A) < w$.
+  We have, then
+  \begin{align*}
+    \frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} &= \frac{|G[A]| + |G[A, B]|}{|A \cup B|} \\
+                                              &= \frac{\frac{1}{2}\sum_{v \in A}d_A(v) + \sum_{v \in B}e(v, A)}{|A| + |B|} \\
+                                              &= \frac{\sum_{v \in A}e(v, A) + 2\sum_{v \in B}e(v, A)}{2(|A| + |B|)} \\
+                                              &< \frac{|A|w + 2|B|w}{2(|A| + |B|)} \\
+                                              &< \frac{2w(|A| + |B|)}{2(|A| + |B|)} \\
+                                              &= w
+  \end{align*}
+  which contradics $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$.
 \end{proof}
+
+\bibliographystyle{sbc}
+\bibliography{bib}
 
 \end{document}
