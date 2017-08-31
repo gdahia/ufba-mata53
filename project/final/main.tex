@@ -31,8 +31,8 @@
 \begin{abstract}
   A known generalization of the Hamiltonian path problem, the problem of \emph{minimum branch vertices} is to find a spanning tree of a given graph $G$ with the minimum number of vertices with degree greater than 2.
   It is already estabilished that this problem is not in \emph{APX}; an approximation preserving reduction from the \emph{minimum set cover} problem shows that, unless \emph{P = NP}, it is not approximable better than a multiplicative ratio of $\Omega(\log n )$ for a graph of order $n$.
-  This is a report made for a term project in class MATA53-UFBA.
-  We briefly review the literature on minimum branch vertices and degree-based spanning tree optimization problems, give a formal statement of the minimum branch vertices problem and outline the techniques we intend to use in our approach.
+  For the term project for class MATA53-UFBA, we unsuccessfully attempted to generalize a known approximation algorithm to a broader class of graphs.
+  We briefly review the literature on minimum branch vertices and degree-based spanning tree optimization problems, give a formal statement of the minimum branch vertices problem and provide a detailed explanation for our failure in finding the said generalization.
 \end{abstract}
      
 \section{Introduction}
@@ -85,31 +85,29 @@ A graph is said to be \emph{traceable} if it admits a Hamiltonian path, it is ot
 Formally, the minimum branch vertices problem is, given $G$, find a spanning tree $T^*$ of $G$ in which $|\{v \in V \mid d_{T^*}(v) > 2 \}|) = s(G)$.
 Put differently, one must find $T^* = \argmin_{T \in \mathcal{T}(G)}(|\{ v \in V \mid d_T(v) > 2\}|)$.
 
-\section{Methods} \label{sec:methods}
+\section{Attempting to generalize MinBST Algorithm} \label{sec:methods}
 
-For this project, we focused on attempting to extend the algorithm in \cite{salamon2010} for minimum branch vertices (hereon called MinBST Algorithm) in evenly dense graphs to a broader class of graphs.
+For this project, we focused on attempting to extend the algorithm in \cite{salamon2010} for minimum branch vertices (hereon refered to as MinBST Algorithm) in evenly dense graphs to a broader class of graphs.
 Specifically, we attempted to generalize the upper bound given for that greedy algorithm to the class of globally dense graphs, \emph{i.e.} graphs that have $\frac{m}{n} \ge cn$, for some $c$.
 
-MinBST Algorithm builds a spanning forest greedily picking the vertex with most neighbors not yet in the forest and, after the spanning forest is built, connects it with specific edges, resulting in a spanning tree with at most $O(\log n)$ branches.
+MinBST Algorithm builds a spanning forest by greedily picking the vertex with most neighbors not yet in the forest and, after that spanning forest is built, it connects it with specific edges, resulting in a spanning tree with at most $O(\log n)$ branches.
 In order to efficiently do so, it keeps three disjoint sets of vertices.
 In this work, for practical reasons, we are going to refer to set A, the set of vertices not yet in the spanning forest, as the set of white vertices, to set B, the set of vertices in the spanning forest that have at least one white neighbor, as the set of gray vertices, and to set C as the set of black vertices.
 
 In our attempt to come up with an algorithm similar to MinBST Algorithm but applicable to globally dense graphs, we divided the underlying lemmas required to prove the main result regarding MinBST Algorithm's correctness into four more general lemmas:
 
 \begin{enumerate}
-  \item At iteration $i$ of building the spanning forest, there is a vertex with at least $ca_i$ white neighbors, where $a_i$ denotes the number of white vertices;
+  \item At iteration $i$ of building the spanning forest, there is a vertex with at least $ca_i$ white neighbors, where $a_i$ denotes the number of vertices currently colored white;
   \item Every iteration of building the spanning forest creates at most $O(1)$ branches;
   \item There are at most $O(\log n)$ iterations of building the spanning forest;
   \item The connected components of the created spanning forest can be connected inducing at most $O(\log n)$ branches.
 \end{enumerate}
 
 We were able to prove Lemma~\ref{lemma1}:
-
 \begin{lemma} \label{lemma1}
   Let $G = (V, E)$ be a simple, undirected graph and let $A$ and $B$ be two disjoint set of its vertices.
   If $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$, then there is a vertex with at least $w$ neighbors in $A$.
 \end{lemma}
-
 \begin{proof}
   Denote by $e(v, A)$ the number of neighbors vertex $v$ has in vertex set $A$.
   Suppose, by contradiction, that $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$ is not enough to assure the existence of vertex $v$ with $e(v, A) \ge w$.
@@ -125,6 +123,20 @@ We were able to prove Lemma~\ref{lemma1}:
   \end{align*}
   which contradics $\frac{|G[A \cup B]| - |G[B]|}{|A \cup B|} \ge w$.
 \end{proof}
+This, however, is not enough to prove that we can generalize MinBST Algorithm for the class of globally dense graphs.
+The problem arises when trying to single out a vertex to add to the spanning forest at each iteration.
+Suppose, that at iteration $i$, we pick gray vertex $v_i$ to color black, and some subset $N_i$ of its white neighbors to color gray.
+If we had white vertex set $A_{i - 1}$, gray vertex set $B_{i - 1}$ and, prior to coloring $v_i$ black, it was true that $\frac{|G[A_{i - 1} \cup B_{i - 1}]| - |G[B_{i - 1}]|}{|A_{i - 1} \cup B_{i - 1}|} \ge c|A_{i - 1}|$, we must show that coloring $v_i$ black does not violate
+$$\frac{|G[A_i \cup B_i]| - |G[B_i]|}{|A_i \cup B_i|} \ge c|A_i|$$
+which, it can be shown, is equivalent to proving
+$$\frac{|G[A_{i - 1} \cup B_{i - 1}]| - |G[B_{i - 1}]| - e(v_i, A_{i - 1}) - |G[B_{i - 1} \setminus \{v_i\}, N_i]| - |G[N_i]|}{|A_{i - 1} \cup B_{i - 1}| - 1} \ge c(|A_{i - 1}| - |N_i|)$$
+or even
+$$|N_i|(|A_{i-1} \cup B_{i-1}| - 1) - e(v_i, A_{i - 1}) - |G[B_{i-1} \setminus \{v_i\}, N_i]| - |G[N_i]| \ge -1$$
+
+Lemma~\ref{lemma1} does not guarantee the existence of at least two vertices with said properties, so there may be iterations in which $v_i$ must be the one which maximizes $e(v_i, A_{i - 1})$.
+Hence, one may need to pick some strict subset of $v_i$'s white neighbors -- picking $N_i$ such that $|N_i| = e(v_i, A_{i - 1})$ removes too many edges in the remaining non-black vertices, for $|N_i|$ can be as much as $|A_{i - 1}| - k$, for some integer $k$, and therefore $|G[N_i]|$ can be as much as ${|A_{i - 1}| - k}\choose{2}$.
+
+Even restrictions to the class of graphs ($K_3$-free graphs) or picking $v_i$ and $v_{i + 1}$ simultaneously would not allow an equivalent to the second lemma to be proven: there are no restrictions to how many elements the term $|G[B_{i-1} \setminus \{v_i\}, N_i]$ can have.
 
 \bibliographystyle{sbc}
 \bibliography{bib}
