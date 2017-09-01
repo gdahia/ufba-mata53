@@ -66,6 +66,7 @@ Their work inspired several others to find algorithms that obtain near-optimal g
 
 In this report, we briefly reviewed the publications addressing minimum branch vertices and related degree-based spanning tree optimization problems.
 We also give a formal statement of the studied problem, alongside the notations and basic definitions used throughout this work, in Section~\ref{sec:notations}, and outline the techniques we used while approaching the problem in Section~\ref{sec:methods}.
+Our conclusions are presented in Section~\ref{sec:conclusions}.
 
 \section{Notations, basic definitions and problem statement} \label{sec:notations}
 
@@ -137,6 +138,14 @@ Lemma~\ref{lemma1} does not guarantee the existence of at least two vertices wit
 Hence, one may need to pick some strict subset of $v_i$'s white neighbors -- picking $N_i$ such that $|N_i| = e(v_i, A_{i - 1})$ removes too many edges in the remaining non-black vertices, for $|N_i|$ can be as much as $|A_{i - 1}| - k$, for some integer $k$, and therefore $|G[N_i]|$ can be as much as ${|A_{i - 1}| - k}\choose{2}$.
 
 Even restrictions to the class of graphs ($K_3$-free graphs) or picking $v_i$ and $v_{i + 1}$ simultaneously would not allow an equivalent to the second lemma to be proven: there are no restrictions to how many elements the term $|G[B_{i-1} \setminus \{v_i\}, N_i]$ can have.
+
+\section{Conclusions} \label{sec:conclusions}
+While doing this term project, we learned that the minimum branch vertices problem is NP-Hard, for it is closely related to a number of other NP-Hard problems, notably the Hamiltonian path problem.
+We also learned, through \cite{salamon2010}, that its approximation properties are restricted -- it is not better approximable than $O(\log n)$ unless P~=~NP.
+
+Studying the literature regarding this problem provided interesting insights into techniques previously unknown to the authors: integer linear programming, heuristics, approximations based on local optimizations or priority rules, and proving that simple algorithms sometimes are good approximations.
+
+The failed attempt to generalize MinBST Algorithm for a broader class of graphs served to, at least, illustrate some of the problems faced when locally trying to guarantee global structures in a graph, or, even more generally, the difficult in providing theoretical guarantees to algorithms.
 
 \bibliographystyle{sbc}
 \bibliography{bib}
